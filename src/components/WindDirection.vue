@@ -12,7 +12,7 @@ const windStyle = computed(() => ({
 
 <template>
     <span>
-        <span aria-hidden="true" class="inline-block" :style="windStyle">⬇</span>
+        <span aria-hidden="true" class="inline-block" data-testid="direction" :style="windStyle">⬇</span>
         <span class="sr-only">
             Wind direction:{{ degrees }} degrees
         </span>

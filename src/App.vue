@@ -1,22 +1,22 @@
 <script setup lang="ts">
-// import HelloWorld from './components/HelloWorld.vue'
-// import TheWelcome from './components/TheWelcome.vue'
 import GetLocation from './components/GetLocation.vue';
+import WeatherReport from './components/WeatherReport.vue';
+import { ref } from 'vue';
+import type { Ref } from 'vue';
+import type { Coords } from './types';
+
+const coords: Ref<Coords | undefined> = ref();
+
+const onCoordsLoaded = (_coords: Coords) => {
+  coords.value = _coords;
+};
+
 </script>
 
 <template>
-  <!-- <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
-
-  <main>
-    <TheWelcome />
-  </main> -->
-  <GetLocation />
+  <GetLocation @coordsLoaded="onCoordsLoaded" />
+  <WeatherReport v-if="coords" :coords="coords" />
+  <div v-else>Loading...</div>
 </template>
 
 <style scoped>

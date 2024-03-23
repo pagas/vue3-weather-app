@@ -20,4 +20,15 @@ describe("WindDirection", () => {
         expect(direction.attributes("style")).toContain("rotate(90deg)");
         expect(direction.html()).toContain("⬇");
     });
+
+    it("renders the correct wind direction for screen readers", (): void => {
+        const wrapper = shallowMount(WindDirection, {
+            props: {
+                degrees: 270,
+            },
+        });
+        const srOnly = wrapper.find("[data-testid=direction-sr]");
+        expect(srOnly.classes()).toContain('sr-only')
+        expect(srOnly.html()).toContain("Wind direction: 270 degrees");
+    });
 });

@@ -1,4 +1,4 @@
-import { shallowMount } from "@vue/test-utils";
+import { shallowMount, VueWrapper } from "@vue/test-utils";
 import GetLocation from "./GetLocation.vue";
 import { GeolocationServiceKey } from '../symbols';
 import type { GeolocationService } from "../types";
@@ -8,21 +8,7 @@ describe("GetLocation", () => {
     it("should render the component without crashing", async (): Promise<void> => {
 
         const mockGeolocationService: GeolocationService = {
-            getCurrentPosition: vi.fn().mockImplementation((successCallback, errorCallback) => {
-                const mockPosition = {
-                    coords: {
-                        latitude: 37.7749,
-                        longitude: -122.4194,
-                        accuracy: 100,
-                        altitude: null,
-                        altitudeAccuracy: null,
-                        heading: null,
-                        speed: null
-                    },
-                    timestamp: Date.now()
-                };
-                successCallback(mockPosition);
-            })
+            getCurrentPosition: () => { }
         };
 
         const wrapper = await shallowMount(GetLocation, {
@@ -34,5 +20,35 @@ describe("GetLocation", () => {
         });
 
         expect(wrapper).toBeTruthy();
+    });
+
+    it("displays when geolocation resolved successfully", async (): Promise<void> => {
+
+        const mockGeolocationService: GeolocationService = {
+            getCurrentPosition: vi.fn((successCallback: Function) => {
+                const position = {
+                    coords: {
+                        latitude: 51.5074,
+                        longitude: -0.1278,
+                    },
+                };
+                successCallback(position);
+            })
+        };
+
+
+        const wrapper = await shallowMount(GetLocation, {
+            global: {
+                provide: {
+                    [GeolocationServiceKey as symbol]: mockGeolocationService,
+                },
+            }
+        }) as VueWrapper<typeof GetLocation>;
+
+
+        expect(wrapper.vm.coords).toEqual({
+            latitude: 51.5074,
+            longitude: -0.1278,
+        });
     });
 });

@@ -51,4 +51,23 @@ describe("GetLocation", () => {
             longitude: -0.1278,
         });
     });
+
+    it("displays a message when user denied access", async (): Promise<void> => {
+        const mockGeolocationService: GeolocationService = {
+            getCurrentPosition: vi.fn((successCallback, errorCallback: PositionErrorCallback = () => { }) => {
+                errorCallback({ code: 1, message: "User denied geolocation access" } as GeolocationPositionError);
+            })
+        };
+
+        const wrapper = await shallowMount(GetLocation, {
+            global: {
+                provide: {
+                    [GeolocationServiceKey as symbol]: mockGeolocationService,
+                },
+            }
+        }) as VueWrapper<typeof GetLocation>;
+
+        expect(wrapper.vm.geolocationBlockedByUser).toEqual(true);
+        expect(wrapper.html()).toContain("User denied access");
+    });
 });

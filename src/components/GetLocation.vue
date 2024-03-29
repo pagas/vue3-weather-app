@@ -26,8 +26,12 @@ const getGeolocation = (): Promise<Coords> => {
 }
 
 onMounted(async () => {
-    await getGeolocation();
-    emit('coordsLoaded', coords.value);
+    try {
+        await getGeolocation();
+        emit('coordsLoaded', coords.value);
+    } catch (error) {
+        console.error(error);
+    }
 });
 
 </script>
